@@ -1,0 +1,75 @@
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    algorithm: PBEWithMD5AndDES
+    pool-size: 2
+    string-output-type: base64
+    key-obtention-iterations: 100000      
+
+spring:
+  datasource:
+    # 기존 RDS (flagmysql) 설정은 주석 처리됨
+#     url: jdbc:mysql://flagmysql.cpakwuq24j8f.ap-northeast-2.rds.amazonaws.com:3306/jpashop?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#     username: root
+#     password: 
+#     driver-class-name: com.mysql.cj.jdbc.Driver
+
+    # localhost MySQL 설정 (활성화됨)
+    url: jdbc:mysql://localhost:3306/jpabook?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: ENC(iH3zWjQtSvg4YwvldMP4XJFO/fWzMdI3)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: none # 개발 시 ddl-auto: update 사용 가능
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+      dialect: org.hibernate.dialect.MySQL8InnoDBDialect
+
+logging:
+  level:
+    root: INFO
+    com.ib.book: DEBUG # 프로젝트 베이스 패키지
+    # org.mybatis: DEBUG # MyBatis 내부 로그 확인
+    # org.springframework.jdbc.core: DEBUG # JDBC 관련 로그
+    # org.apache.ibatis: DEBUG # MyBatis 내부 로그 상세 확인
+    # java.sql: DEBUG # 실행되는 SQL 쿼리 로그 (PreparedStatement 파라미터 바인딩 등 상세 확인)
+    
+management:
+  endpoint:
+    health:
+      show-details: always # health 엔드포인트의 상세 정보를 항상 보여주도록 설정
+      # show-components: always # Spring Boot 3.x에서 상세정보 노출을 위해 함께 설정하면 좋습니다.
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus # 웹을 통해 노출할 엔드포인트 목록을 지정
+        # *: 모든 엔드포인트를 노출하려면 '*'로 설정 (보안상 주의 필요)
+        # include: '*' # 모든 엔드포인트 노출 (보안 위험)
+        
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  paths-to-match: /v1/**
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+    groups-order: DESC
+    
+mybatis:
+  mapper-locations: classpath*:mybatis/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    
+
+        
+        

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.ib.book.member.model.dao.MemberMapper">
+	
+	<!-- 사용자 List 조회 -->
+    <select id="getMemberList"
+            parameterType="com.ib.book.member.model.dto.MemberListReq"
+            resultType="com.ib.book.member.model.dto.MemberListRes">
+        /* MemberMapper.getMemberList */
+        SELECT
+            member_id,
+            loginId,
+            name,
+            company,
+            city,
+            street,
+            zipcode,
+            phone,
+            bizRegiNo
+        FROM member
+        WHERE 1=1
+        <!-- 검색 조건: searchValue에 따라 searchKeyword 필드로 검색 -->
+        <if test='searchValue != null and searchValue != ""'>
+            <choose>
+                <when test='searchKeyword == "loginId"'>
+                    AND loginId LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test='searchKeyword == "name"'>
+                    AND name LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test='searchKeyword == "company"'>
+                    AND company LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test='searchKeyword == "phone"'>
+                    AND phone LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test='searchKeyword == "bizRegiNo"'>
+                    AND bizRegiNo LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY member_id 
+    </select>
+
+    <!-- 총 회원 수 조회 (페이지네이션을 위해 필요) -->
+    <select id="getMemberListCnt"
+            parameterType="com.ib.book.member.model.dto.MemberListReq"
+            resultType="int">
+        /* MemberMapper.getMemberListCnt */
+        SELECT
+            COUNT(member_id)
+        FROM member
+        WHERE 1=1
+        <if test='searchValue != null and searchValue != ""'>
+            <choose>
+                <when test='searchKeyword == "loginId"'>
+                    AND loginId LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test='searchKeyword == "name"'>
+                    AND name LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test='searchKeyword == "company"'>
+                    AND company LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test='searchKeyword == "phone"'>
+                    AND phone LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+                <when test='searchKeyword == "bizRegiNo"'>
+                    AND bizRegiNo LIKE CONCAT('%', #{searchValue}, '%')
+                </when>
+            </choose>
+        </if>
+        <!-- 등록일 검색 조건도 getMemberList와 동일하게 필요시 추가 -->
+    </select>
+
+</mapper>
